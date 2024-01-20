@@ -7,6 +7,8 @@ https://zh.wikipedia.org/wiki/%E9%BB%91%E7%99%BD%E6%A3%8B
 from copy import deepcopy
 
 class Othello():
+    # Constants
+    SIZE = 8
     def __init__(self):
         '''
         A 8*8 board, 1 for X / black, -1 for O/ white, 0 for empty.
