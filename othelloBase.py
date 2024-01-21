@@ -49,6 +49,7 @@ class Othello():
         '''
         Return a list of valid positions / moves for the current player.
         '''
+        
         validPositions = []
         for i in range(8):
             for j in range(8):
@@ -199,3 +200,33 @@ class Othello():
         Return the current player.
         '''
         return self.turn
+    
+    def getState(self):
+        """返回当前棋盘的状态
+
+        Returns:
+            64维向量
+        """
+        return np.array(self.board, dtype=np.int).flatten()     # 返回一个一维数组
+    
+    def Add(self, my_color, pos):
+        """加入一个新的棋子
+
+        Arguments:
+            my_color {int} -- 1表示黑棋，-1表示白棋
+            pos {int} -- 位置
+        """
+        if pos != 64:
+            (x, y) = (pos // self.board_size, pos % self.board_size)
+            self.board[x][y] = my_color
+            if my_color == 1:
+                self.black_chess.add((x, y))
+                self.board[x][y] = 1
+            elif my_color == -1:
+                self.white_chess.add((x, y))
+                self.board[x][y] = -1
+
+            if my_color == 1:
+                self.Reverse((x, y), self.black_chess, self.white_chess, my_color)
+            elif my_color == -1:
+                self.Reverse((x, y), self.white_chess, self.black_chess, my_color)

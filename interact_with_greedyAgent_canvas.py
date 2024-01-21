@@ -33,7 +33,7 @@ while not game.isEnd():
                     print("Invalid move!")
                     continue
     else:
-        print(f"Greedy Player is thinking...")
+        # print(f"Greedy Player is thinking...")
         agent.updateGame(game)
         # Let the greedy agent place the piece
         agent.makeMove()
