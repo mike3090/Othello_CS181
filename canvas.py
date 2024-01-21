@@ -4,71 +4,50 @@ from tkinter import messagebox
 import sys
 from othelloBase import Othello
 
-# Colors
-BLACK = (0, 0, 0)
-WHITE = (255, 255, 255)
-GREEN = (0, 128, 0)
-RED = (255, 0, 0)
 
-# constants
-WIDTH, HEIGHT = 400, 400
-SQUARE_SIZE = WIDTH // Othello.SIZE
-# Initialize Pygame
-pygame.init()
+class Canvas() :
+    # Colors
+    BLACK = (0, 0, 0)
+    WHITE = (255, 255, 255)
+    GREEN = (0, 128, 0)
+    RED = (255, 0, 0)
+    # constants
+    WIDTH, HEIGHT = 400, 400
+    SQUARE_SIZE = WIDTH // Othello.SIZE
 
-# Set up the display
-root = tk.Tk()
-root.withdraw()
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Othello")
+    def __init__(self):
 
-def draw_board(board, validPositions):
-    screen.fill(GREEN)
-    for row in range(Othello.SIZE):
-        for col in range(Othello.SIZE):
-            pygame.draw.rect(screen, BLACK, (col * SQUARE_SIZE, row * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE), 1)
-            if board[row][col] == 1:
-                pygame.draw.circle(screen, BLACK, (col * SQUARE_SIZE + SQUARE_SIZE // 2, row * SQUARE_SIZE + SQUARE_SIZE // 2), SQUARE_SIZE // 2 - 5)
-            elif board[row][col] == -1:
-                pygame.draw.circle(screen, WHITE, (col * SQUARE_SIZE + SQUARE_SIZE // 2, row * SQUARE_SIZE + SQUARE_SIZE // 2), SQUARE_SIZE // 2 - 5)
-    for position in validPositions:
-        pygame.draw.circle(screen, RED, (position[1] * SQUARE_SIZE + SQUARE_SIZE // 2, position[0] * SQUARE_SIZE + SQUARE_SIZE // 2), SQUARE_SIZE // 2 - 20)
+        # Initialize Pygame
+        pygame.init()
 
-def game_over(winner):
-    if winner:
-        # pygame loop here
-        messagebox.showinfo("Game Over", f"{['Black', 'White'][winner == -1]} player wins!")
-    else:
-        messagebox.showinfo("Game Over", "Draw!")
+        # Set up the display
+        self.root = tk.Tk().withdraw()
+        self.screen = pygame.display.set_mode((Canvas.WIDTH, Canvas.HEIGHT))
+        pygame.display.set_caption("Othello")
 
-    pygame.quit()
-    sys.exit()
-    root.lift()
+    def draw_board(self, board, validPositions):
+        self.screen.fill(Canvas.GREEN)
 
-def main():
-    OthelloGame = Othello()
-    while True:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                mouse_x, mouse_y = pygame.mouse.get_pos()
-                clicked_row = mouse_y // SQUARE_SIZE
-                clicked_col = mouse_x // SQUARE_SIZE
-                if OthelloGame._checkValid(clicked_row, clicked_col, OthelloGame.getTurn()):
-                    OthelloGame.place(clicked_row, clicked_col, OthelloGame.getTurn())
-                else:
-                    print("Invalid move!")
-                    continue
-                
-
-        draw_board(OthelloGame.getBoard(),OthelloGame.getValidPositions(OthelloGame.getTurn()))
+        for row in range(Othello.SIZE):
+            for col in range(Othello.SIZE):
+                pygame.draw.rect(self.screen, Canvas.BLACK, (col * Canvas.SQUARE_SIZE, row * Canvas.SQUARE_SIZE, Canvas.SQUARE_SIZE, Canvas.SQUARE_SIZE), 1)
+                if board[row][col] == 1:
+                    pygame.draw.circle(self.screen, Canvas.BLACK, (col * Canvas.SQUARE_SIZE + Canvas.SQUARE_SIZE // 2, row * Canvas.SQUARE_SIZE + Canvas.SQUARE_SIZE // 2), Canvas.SQUARE_SIZE // 2 - 5)
+                elif board[row][col] == -1:
+                    pygame.draw.circle(self.screen, Canvas.WHITE, (col * Canvas.SQUARE_SIZE + Canvas.SQUARE_SIZE // 2, row * Canvas.SQUARE_SIZE + Canvas.SQUARE_SIZE // 2), Canvas.SQUARE_SIZE // 2 - 5)
+    
+        for position in validPositions:
+            pygame.draw.circle(self.screen, Canvas.RED, (position[1] * Canvas.SQUARE_SIZE + Canvas.SQUARE_SIZE // 2, position[0] * Canvas.SQUARE_SIZE + Canvas.SQUARE_SIZE // 2), Canvas.SQUARE_SIZE // 2 - 20)
+        # update display
         pygame.display.flip()
 
-        # game over
-        if OthelloGame.isEnd():
-            game_over(OthelloGame.getWinner())
+    def game_over(self, winner):
+        if winner:
+            # pygame loop here
+            messagebox.showinfo("Game Over", f"{['Black', 'White'][winner == -1]} player wins!")
+        else:
+            messagebox.showinfo("Game Over", "Draw!")
 
-if __name__ == "__main__":
-    main()
+        pygame.quit()
+        sys.exit()
+        self.root.lift()
