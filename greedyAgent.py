@@ -4,6 +4,7 @@ implement a greedy agent that plays the Othello game,
 which, for every turn, chooses the move that flips the most pieces.
 '''
 from othelloBase import Othello
+import random
 
 class greedyAgent():
     def __init__(self, game: Othello):
@@ -29,6 +30,11 @@ class greedyAgent():
             if flips > self.max_flips:
                 self.max_flips = flips
                 self.best_move = (x, y)
+            # introduce some randomness.
+            if flips == self.max_flips:
+                if random.random() > 0.5:
+                    self.max_flips = flips
+                    self.best_move = (x, y)
             self.game.undo()
         
         return self.best_move
