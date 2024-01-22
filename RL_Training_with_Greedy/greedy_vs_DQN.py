@@ -1,12 +1,12 @@
 import sys
-sys.path.append("..")
-from othelloBase import Othello
+# sys.path.append("..")
+from oldothelloBase import Othello
 from DQN_Agent import DQNAgent
-from greedyAgent import greedyAgent
+from oldgreedyAgent import greedyAgent
 from canvas import Canvas
-import pygame
 
-# 用户想先手，就把他改成True，否则改成False
+
+# 欲使DQN执黑则设为True
 if_DQN_first = False
 
 # # Create an instance of the Othello game
@@ -60,7 +60,7 @@ if_DQN_first = False
 
 win_cnt = 0
 for i in range(500):
-    if i%10 == 0:
+    if i%100 == 0:
         print(i)
     # Create an instance of the Othello game
     game = Othello()
@@ -106,7 +106,7 @@ for i in range(500):
 
     winner = game.getWinner()
     winnerName = "X" if winner == 1 else "O"
-    print(winnerName)
+    print(winnerName,end=", ")
     if if_DQN_first and winner == 1:
         win_cnt+=1
     elif not if_DQN_first and winner == -1:
