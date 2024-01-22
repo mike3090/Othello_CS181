@@ -5,6 +5,7 @@ https://zh.wikipedia.org/wiki/%E9%BB%91%E7%99%BD%E6%A3%8B
 '''
 
 from copy import deepcopy
+import numpy as np
 
 class Othello():
     # Constants

@@ -36,11 +36,12 @@ class QNet(nn.Module):
 
 class DQNAgent():
     def __init__(self, game: Othello, turn):
-        self.q_net = QNet().to(device)
+        self.q_net = QNet()
         if turn == 1: # X
             self.q_net.load_state_dict(torch.load('model/model_X.pth'))
         else: # O
             self.q_net.load_state_dict(torch.load('model/model_O.pth'))
+        self.q_net.to(device)
         self.q_net.eval()
         self.game = game
         self.turn = turn
