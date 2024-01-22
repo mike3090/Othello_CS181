@@ -2,6 +2,7 @@ import sys
 sys.path.append("..")
 from othelloBase import Othello
 from DQN_Agent import DQNAgent
+from DuelingDQN_Agent import DuelingDQNAgent
 from canvas import Canvas
 import pygame
 
@@ -13,7 +14,7 @@ if_user_first = False
 game = Othello()
 # Create an instance of the greedy agent
 if if_user_first:
-    agent = DQNAgent(game, -1)
+    agent = DQNAgent(game, -1)  # 可以修改成DuelingDQN
 else:
     agent = DQNAgent(game, 1)
 
