@@ -52,7 +52,7 @@ class OthelloEnvironment(gym.Env):
             else:
                 l = self.game.getValidPositions(-self.game.turn)
                 if (0,0) in l or (0,7) in l or (7,0) in l or (7,7) in l:
-                    reward -= 50
+                    reward -= 200
                 else:
                     reward = 0
             terminated = False
