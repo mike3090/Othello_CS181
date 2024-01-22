@@ -49,5 +49,5 @@ class Canvas() :
             messagebox.showinfo("Game Over", "Draw!")
 
         pygame.quit()
+
         sys.exit()
-        self.root.lift()

@@ -3,48 +3,31 @@ Based on the othelloBase,
 implement a greedy agent that plays the Othello game,
 which, for every turn, chooses the move that flips the most pieces.
 '''
-from othelloBase import Othello
+from util import *
+from othelloBase import GameState
+from othelloBase import Agent
 import random
 
-class greedyAgent():
-    def __init__(self, game: Othello):
-        self.game = game
-        self.max_flips = 0
-        self.best_move = None
-    
-    def updateGame(self, game: Othello):
-        self.game = game
+class GreedyAgent(Agent):
 
-    def findBestMove(self):
+    def getAction(self, state: GameState):
         '''
         Find the best move.
         '''
-        self.best_move = None
-        self.max_flips = 0
-        self.turn = self.game.getTurn()
-        # print(self.turn)
-        self.valid_positions = self.game.getValidPositions(self.turn)
-        # print(f"Valid positions: {self.valid_positions}")
-        for (x, y) in self.valid_positions:
-            flips = self.game.place(x, y, self.turn)
-            if flips > self.max_flips:
-                self.max_flips = flips
-                self.best_move = (x, y)
+        best_move = None
+        valid_positions = state.getValidPositions()
+        max_flips = 0
+        #print(f"Valid positions: {valid_positions}")
+        for (x, y) in valid_positions:
+            flips = state.countFlips(x, y)
+            if flips > max_flips:
+                max_flips = flips
+                best_move = (x, y)
             # introduce some randomness.
-            if flips == self.max_flips:
+            if flips == max_flips:
                 if random.random() > 0.5:
-                    self.max_flips = flips
-                    self.best_move = (x, y)
-            self.game.undo()
-        
-        return self.best_move
-    
-    def makeMove(self):
-        '''
-        Play the best move directly.
-        '''
-        best_move = self.findBestMove()
-        # print(best_move)
-        if best_move is not None:
-            x, y = best_move
-            self.game.place(x, y, self.turn)
+                    max_flips = flips
+                    best_move = (x, y)
+        if best_move is None:
+          print("No valid move found. Exiting the program.")  
+        return best_move
