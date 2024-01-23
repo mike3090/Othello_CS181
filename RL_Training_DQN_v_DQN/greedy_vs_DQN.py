@@ -1,13 +1,12 @@
-import sys
-sys.path.append("..")
-from othelloBase import Othello
+from oldothelloBase import Othello
 from DQN_Agent import DQNAgent
-from greedyAgent import greedyAgent
-from canvas import Canvas
-import pygame
+from DQN_Agent import DQNAgent_5000
+from DQN_Agent import DQNAgent_460000
+from oldgreedyAgent import greedyAgent
 
 # 用户想先手，就把他改成True，否则改成False
 if_DQN_first = False
+
 
 # # Create an instance of the Othello game
 # game = Othello()
@@ -67,12 +66,14 @@ for i in range(500):
     # Create an instance of the greedy agent
     if if_DQN_first:
         # print("X IS DQN")
-        agentX = DQNAgent(game, 1)
+        # agentX = DQNAgent_5000(game, 1)
         agentO = greedyAgent(game)
+        agentX = DQNAgent_460000(game, 1)
     else:
         # print("X IS Greedy")
+        agentO = DQNAgent_460000(game, -1)
+        # agentO = DQNAgent_5000(game, -1)
         agentX = greedyAgent(game)
-        agentO = DQNAgent(game, -1)
 
     while not game.isEnd():
         # Get the current player's turn
@@ -112,4 +113,8 @@ for i in range(500):
     elif not if_DQN_first and winner == -1:
         win_cnt+=1
     
-print(f"Win Rate: {win_cnt}/500")
+if if_DQN_first:
+    print("X is DQN")
+else:
+    print("O is DQN")
+print(f"460000 Win Rate: {win_cnt}/500")
