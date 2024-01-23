@@ -19,7 +19,8 @@ class OthelloEnvironment(gym.Env):
         # else: 8*row + col
         row = action // 8
         col = action % 8
-        reward = 0
+        Xreward = 0
+        Oreward = 0
         # by default, we believe the actions are valid
         if action == 64:
             pass
@@ -27,8 +28,10 @@ class OthelloEnvironment(gym.Env):
             self.game.place(row, col, self.game.turn)
         
         if self.game.isEnd():
-            winner = self.game.getWinner()
-            score = self.game.getScore()
+            # winner = self.game.getWinner()
+            Xscore = self.game.getXScore()
+            Oscore = self.game.getOScore()
+                
             # Print the winner and score
             # if winner == 1:
             #     print("Black wins!")
@@ -37,38 +40,45 @@ class OthelloEnvironment(gym.Env):
             # else:
             #     print("It's a tie!")
             # print(f"Score for X: {score}")
-            reward = score * 10
+            Xreward = Xscore * 10
+            Oreward = Oscore * 10
             terminated = True
-            return self.game, reward, terminated, False, {}
+            return self.game, Xreward, Oreward, terminated, False, {}
         else:
             # 对在边角的情况进行奖励
             if (row,col) == (0,0) or (row,col) == (0,7) or (row,col) == (7,0) or (row,col) == (7,7):
-                reward += 100
+                Xreward += 100
+                Oreward += 100
             elif (row, col) == (0,1) or (row, col) == (1,0) or (row, col) == (1,1) \
                  or (row, col) ==(0,6) or (row, col) ==(1,6) or (row, col) ==(1,7) \
                  or (row, col) ==(6,0) or (row, col) ==(6,1) or (row, col) ==(7,1) \
                  or (row, col) ==(6,6) or (row, col) ==(6,7) or (row, col) ==(7,6):
-                reward -=35
+                Xreward -=35
+                Oreward -=35
             elif (row, col) == (0,2) or (row, col) == (0,5) or (row, col) == (2,0) \
                  or (row, col) == (2,7) or (row, col) == (6,0) or (row, col) == (6,7) \
                  or (row, col) == (7,2) or (row, col) == (7,5):
-                reward += 10
+                Xreward += 10
+                Oreward += 10
             elif (row, col) == (3, 0) or (row, col) == (4, 0) \
                  or (row, col) == (2, 2) or (row, col) == (5, 2) \
                  or (row, col) == (2, 5) or (row, col) == (5, 5) \
                  or (row, col) == (3, 7) or (row, col) == (4, 7):
-                reward += 5
+                Xreward += 5
+                Oreward += 5
             elif (row, col) == (2, 1) or (row, col) == (3, 1) or (row, col) == (4, 1) or (row, col) == (5, 1) \
                  or (row, col) == (1, 2) or (row, col) == (6, 2) or (row, col) == (1, 3) or (row, col) == (6, 3) \
                  or (row, col) == (1, 4) or (row, col) == (6, 4) or (row, col) == (1, 5) or (row, col) == (6, 5) \
                  or (row, col) == (3, 4) or (row, col) == (4, 4) or (row, col) == (3, 3) or (row, col) == (4, 3) \
                  or (row, col) == (2, 6) or (row, col) == (3, 6) or (row, col) == (4, 6) or (row, col) == (5, 6):
-                reward += 2
+                Xreward += 2
+                Oreward += 2
             elif (row, col) == (3, 2) or (row, col) == (4, 2) or (row, col) == (2, 3) or (row, col) == (5, 3) \
                  or (row, col) == (2, 4) or (row, col) == (5, 4) or (row, col) == (3, 5) or (row, col) == (4, 5):
-                reward += 1
+                Xreward += 1
+                Oreward += 1
             terminated = False
-            return self.game, reward, terminated, False, {}
+            return self.game, Xreward, Oreward, terminated, False, {}
 
     def reset(self):
         self.game.board = [[0 for _ in range(8)] for _ in range(8)]
