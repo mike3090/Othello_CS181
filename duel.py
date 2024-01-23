@@ -1,3 +1,4 @@
+from util import *
 import argparse
 import time
 from othelloBase import *
@@ -7,9 +8,10 @@ from mouseAgent import MouseAgent
 from DQNAgent import DQNAgent
 from MCTSAgent import MCTSAgent
 from minmaxAgent import MinmaxAgent
+from randomAgent import RandomAgent
 
 # Parse command-line arguments
-agents = ['greedy', 'mouse', 'DQN', 'MCTS', 'minmax']
+agents = ['random', 'greedy', 'mouse', 'DQN', 'MCTS', 'minmax']
 parser = argparse.ArgumentParser(description='Select an agent for the Othello game.')
 parser.add_argument('-b', '--black', type=str, default='greedy', choices=agents,
                     help='the black player')
@@ -22,7 +24,9 @@ parser.add_argument('-r', '--repeat', type=int, default=1, help='Number of games
 
 # Select the agent based on the command-line argument
 def get_agent(agent_type, model_path=None, color = None):
-    if agent_type == 'greedy':
+    if agent_type == 'random':
+        return RandomAgent()
+    elif agent_type == 'greedy':
         return GreedyAgent()
     elif agent_type == 'mouse':
         return MouseAgent()
@@ -32,7 +36,7 @@ def get_agent(agent_type, model_path=None, color = None):
         else:
             raise ValueError("Model path must be provided for DQN agent.")
     elif agent_type == 'MCTS':
-        return MCTSAgent(100)
+        return MCTSAgent()
     elif agent_type == 'minmax':
         return MinmaxAgent(color)
     else:
@@ -43,14 +47,15 @@ def play_game(args):
     # Create the game and canvas
     game = Othello()
     canvas = Canvas() if args.visual else None
+    last_action = None
     # initialize agents 
     agent_b = get_agent(args.black, 'RL_method/model/model_X.pth')
     agent_w = get_agent(args.white, 'RL_method/model/model_O.pth')
     # Main game loop
     while not game.isEnd():
         state = game.gamestate
-
-        canvas.draw_board(state.board, state.getValidPositions()) if args.visual else None
+        
+        canvas.draw_board(state.board, state.getValidPositions(), last_action) if args.visual else None
 
         # control the playing speed
         time.sleep(args.speed)
@@ -60,12 +65,14 @@ def play_game(args):
             x, y = agent_w.getAction(state)
 
         game.place(x, y)
+        # used to draw the last action
+        last_action = (x, y)
 
     winner = "Black" if game.getWinner() == 1 else "White" if game.getWinner() == -1 else "No one (it's a tie)"
     print(f"Game Over. {winner} wins!")
 
     if args.visual:
-        canvas.draw_board(game.getBoard(), game.gamestate.getValidPositions())
+        canvas.draw_board(game.getBoard(), game.gamestate.getValidPositions(), last_action)
         canvas.game_over(game.getWinner())
     return winner
 

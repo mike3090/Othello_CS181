@@ -25,7 +25,7 @@ class Canvas() :
         self.screen = pygame.display.set_mode((Canvas.WIDTH, Canvas.HEIGHT))
         pygame.display.set_caption("Othello")
 
-    def draw_board(self, board, validPositions):
+    def draw_board(self, board, validPositions, last_action):
         self.screen.fill(Canvas.GREEN)
 
         for row in range(Othello.SIZE):
@@ -38,6 +38,9 @@ class Canvas() :
     
         for position in validPositions:
             pygame.draw.circle(self.screen, Canvas.RED, (position[1] * Canvas.SQUARE_SIZE + Canvas.SQUARE_SIZE // 2, position[0] * Canvas.SQUARE_SIZE + Canvas.SQUARE_SIZE // 2), Canvas.SQUARE_SIZE // 2 - 20)
+        
+        if last_action is not None:
+            pygame.draw.circle(self.screen, Canvas.GREEN, (last_action[1] * Canvas.SQUARE_SIZE + Canvas.SQUARE_SIZE // 2, last_action[0] * Canvas.SQUARE_SIZE + Canvas.SQUARE_SIZE // 2), Canvas.SQUARE_SIZE // 2 - 10)
         # update display
         pygame.display.flip()
 
