@@ -7,7 +7,6 @@ https://zh.wikipedia.org/wiki/%E9%BB%91%E7%99%BD%E6%A3%8B
 from util import *
 from copy import deepcopy
 import numpy as np
-import copy
 
 class Othello():
     # Constants
@@ -48,7 +47,7 @@ class Othello():
         '''
         Check if the game is over.
         '''
-        return self.gamestate.getBlackScore() + self.gamestate.getWhiteScore() == 64
+        return self.gamestate.is_terminal()
         
     def getWinner(self):
         '''
@@ -112,6 +111,11 @@ class GameState:
         if turn is None:
             self.turn = 1
 
+    def __eq__(self, other):
+        if isinstance(other, GameState):
+            return self.board == other.board and self.turn == other.turn
+        return False  
+    
     def reverseTurn(self):
         self.turn *= -1
 
@@ -170,7 +174,7 @@ class GameState:
         '''
         return a gamestate after placing stone in (x,y)
         '''
-        successor = copy.copy(self)
+        successor = deepcopy(self)
         successor.board[x][y] = self.turn
         successor._flip(x, y)
         successor.reverseTurn()
@@ -224,6 +228,9 @@ class GameState:
                 if self.board[i][j] == -1:
                     whiteCount += 1
         return whiteCount
+    
+    def is_terminal(self):
+        return self.getValidPositions() == []
 
 class Agent:
     """
