@@ -1,0 +1,11 @@
+Win rate for MinmaxAgent: 82.0% over 50 games.
+average score:65.67363748376512%
+using weights: w1=1, w2=1, w3=5
+
+Win rate for MinmaxAgent: 74.0% over 50 games.
+average score:58.30307631642447%
+using weights: w1=2.533505201924117, w2=1.2795876956164922, w3=3.6082875641232692
+
+Win rate for MinmaxAgent: 82.0% over 50 games.
+average score:63.12607609192972%
+using weights: w1=2.833337761398725, w2=3.660558028419165, w3=3.636812042078707

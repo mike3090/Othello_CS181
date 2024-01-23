@@ -7,9 +7,11 @@ from mouseAgent import MouseAgent
 from DQNAgent import DQNAgent
 from MCTSAgent import MCTSAgent
 from minmaxAgent import MinmaxAgent
+from minmaxAgent import AlphaBetaAgent
+import random
 
 # Parse command-line arguments
-agents = ['greedy', 'mouse', 'DQN', 'MCTS', 'minmax']
+agents = ['greedy', 'mouse', 'DQN', 'MCTS', 'minmax', 'alphabeta']
 parser = argparse.ArgumentParser(description='Select an agent for the Othello game.')
 parser.add_argument('-b', '--black', type=str, default='greedy', choices=agents,
                     help='the black player')
@@ -21,7 +23,7 @@ parser.add_argument('-r', '--repeat', type=int, default=1, help='Number of games
 
 
 # Select the agent based on the command-line argument
-def get_agent(agent_type, model_path=None, color = None):
+def get_agent(agent_type, model_path=None, color = None, weights = None):
     if agent_type == 'greedy':
         return GreedyAgent()
     elif agent_type == 'mouse':
@@ -34,18 +36,20 @@ def get_agent(agent_type, model_path=None, color = None):
     elif agent_type == 'MCTS':
         return MCTSAgent(100)
     elif agent_type == 'minmax':
-        return MinmaxAgent(color)
+        return MinmaxAgent(color, weights)
+    elif agent_type == 'alphabeta':
+        return AlphaBetaAgent(color, weights)
     else:
         raise ValueError(f"Unknown agent type: {agent_type}")
 
 
-def play_game(args):
+def play_game(args, weights):
     # Create the game and canvas
     game = Othello()
     canvas = Canvas() if args.visual else None
     # initialize agents 
-    agent_b = get_agent(args.black, 'RL_method/model/model_X.pth', 'black')
-    agent_w = get_agent(args.white, 'RL_method/model/model_O.pth', 'white')
+    agent_b = get_agent(args.black, 'RL_method/model/model_X.pth', 'black', weights)
+    agent_w = get_agent(args.white, 'RL_method/model/model_O.pth', 'white', weights)
     # Main game loop
     while not game.isEnd():
         state = game.gamestate
@@ -67,15 +71,44 @@ def play_game(args):
     if args.visual:
         canvas.draw_board(game.getBoard(), game.gamestate.getValidPositions())
         canvas.game_over(game.getWinner())
-    return winner
+    score = state.getWhiteScore() / (state.getWhiteScore() + state.getBlackScore()) 
+    print(f"score:{score*100}%")
+    return winner, score
 
 
 if __name__ == "__main__":
     args = parser.parse_args()
-    # run game repeatedly
-    wins = 0
-    for _ in range(args.repeat):
-        wins += 1 if play_game(args) == "Black" else 0
+    print('start testing minmax agent against greedy')
 
-    win_rate = wins / args.repeat
-    print(f'Win rate for black player: {win_rate * 100}%')
+    max_score = -999
+    best_weights = None
+
+    for n in range(1):
+        # w1 = random.uniform(1, 5)
+        # w2 = random.uniform(1, 5)
+        # w3 = random.uniform(1, 5)
+        w1=1
+        w2=1
+        w3=5
+        weights = (w1, w2, w3)
+        # run game repeatedly
+        wins = 0
+        total_score = 0
+        for _ in range(50):
+            winner, score = play_game(args, weights)
+            if winner == "White":
+                wins += 1
+            total_score += score
+        win_rate = wins / 50
+        average_score = total_score / 50
+        print(f'Win rate for MinmaxAgent: {win_rate * 100}% over {50} games.')
+        print(f'average score:{average_score*100}%')
+        print(f'using weights: w1={w1}, w2={w2}, w3={w3}')
+
+        if average_score > max_score:
+            max_score = average_score
+            best_weights = weights
+    # print(f'best score:{max_score}')
+    # print(f'best weights: w1={best_weights[0]}, w2={best_weights[1]}, w3={best_weights[2]}')
+    
+    
