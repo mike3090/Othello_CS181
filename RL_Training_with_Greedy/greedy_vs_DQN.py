@@ -7,7 +7,11 @@ from oldgreedyAgent import greedyAgent
 
 
 # 欲使DQN执黑则设为True
-if_DQN_first = False
+if_DQN_first = True
+if if_DQN_first:
+    print("X IS DQN")
+else:
+    print("X IS Greedy")
 
 # # Create an instance of the Othello game
 # game = Othello()
