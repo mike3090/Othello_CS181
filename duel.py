@@ -31,12 +31,18 @@ def get_agent(agent_type, model_path=None):
         else:
             raise ValueError("Model path must be provided for DQN agent.")
     elif agent_type == 'MCTS':
-        return MCTSAgent(100)
+        return MCTSAgent()
     else:
         raise ValueError(f"Unknown agent type: {agent_type}")
 
 
 def play_game(args):
+    # Create the game and canvas
+    game = Othello()
+    canvas = Canvas() if args.visual else None
+    # initialize agents 
+    agent_b = get_agent(args.black, 'RL_method/model/model_X.pth')
+    agent_w = get_agent(args.white, 'RL_method/model/model_O.pth')
     # Main game loop
     while not game.isEnd():
         state = game.gamestate
@@ -54,24 +60,19 @@ def play_game(args):
 
     winner = "Black" if game.getWinner() == 1 else "White" if game.getWinner() == -1 else "No one (it's a tie)"
     print(f"Game Over. {winner} wins!")
+
+    if args.visual:
+        canvas.draw_board(game.getBoard(), game.gamestate.getValidPositions())
+        canvas.game_over(game.getWinner())
     return winner
 
 
 if __name__ == "__main__":
     args = parser.parse_args()
-    # Create the game and canvas
-    game = Othello()
-    canvas = Canvas() if args.visual else None
-    # initialize agents 
-    agent_b = get_agent(args.black, 'RL_method/model/model_X.pth')
-    agent_w = get_agent(args.white, 'RL_method/model/model_O.pth')
     # run game repeatedly
     wins = 0
     for _ in range(args.repeat):
-        wins += 1 if play_game(args) else None
+        wins += 1 if play_game(args) == "Black" else 0
 
     win_rate = wins / args.repeat
     print(f'Win rate for black player: {win_rate * 100}%')
-    if args.visual:
-        canvas.draw_board(game.getBoard(), game.gamestate.getValidPositions())
-        canvas.game_over(game.getWinner())
