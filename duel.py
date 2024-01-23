@@ -49,8 +49,8 @@ def play_game(args):
     canvas = Canvas() if args.visual else None
     last_action = None
     # initialize agents 
-    agent_b = get_agent(args.black, 'RL_method/model/model_X.pth')
-    agent_w = get_agent(args.white, 'RL_method/model/model_O.pth')
+    agent_b = get_agent(args.black, 'RL_Training_with_Greedy/model/model_X.pth')
+    agent_w = get_agent(args.white, 'RL_Training_with_Greedy/model/model_O.pth')
     # Main game loop
     while not game.isEnd():
         state = game.gamestate

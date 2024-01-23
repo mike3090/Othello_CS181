@@ -3,6 +3,7 @@ import tkinter as tk
 from tkinter import messagebox
 import sys
 from othelloBase import Othello
+import time
 
 
 class Canvas() :
@@ -26,6 +27,11 @@ class Canvas() :
         pygame.display.set_caption("Othello")
 
     def draw_board(self, board, validPositions, last_action):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
         self.screen.fill(Canvas.GREEN)
 
         for row in range(Othello.SIZE):
