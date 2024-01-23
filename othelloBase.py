@@ -229,6 +229,20 @@ class GameState:
                     whiteCount += 1
         return whiteCount
     
+    # update state, used in MinmaxAgent
+    def getNextState(self, move):
+        if self.getBlackScore() + self.getWhiteScore() == 64:
+            raise Exception('Can\'t generate a child of a terminal state.')
+        
+        # Copy current state
+        state = GameState(self.board, self.turn)
+        state.board = deepcopy(self.board)
+        (x, y) = move
+        state._flip(x, y)
+        state.reverseTurn()
+
+        return state
+    
     def is_terminal(self):
         return self.getValidPositions() == []
 
