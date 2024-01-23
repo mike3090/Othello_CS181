@@ -5,9 +5,10 @@ from canvas import Canvas
 from greedyAgent import GreedyAgent
 from mouseAgent import MouseAgent
 from DQNAgent import DQNAgent
+from MCTSAgent import MCTSAgent
 
 # Parse command-line arguments
-agents = ['greedy', 'mouse', 'DQN']
+agents = ['greedy', 'mouse', 'DQN', 'MCTS']
 parser = argparse.ArgumentParser(description='Select an agent for the Othello game.')
 parser.add_argument('-b', '--black', type=str, default='greedy', choices=agents,
                     help='the black player')
@@ -23,21 +24,23 @@ game = Othello()
 canvas = Canvas() if args.visual else None
 
 # Select the agent based on the command-line argument
-if args.black == 'greedy':
-    agent_b = GreedyAgent()
-elif args.black == 'mouse':
-    agent_b = MouseAgent()
-elif args.black == 'DQN':
-    agent_b = DQNAgent('RL_method/model/model_X.pth')
+def get_agent(agent_type, model_path=None):
+    if agent_type == 'greedy':
+        return GreedyAgent()
+    elif agent_type == 'mouse':
+        return MouseAgent()
+    elif agent_type == 'DQN':
+        if model_path is not None:
+            return DQNAgent(model_path)
+        else:
+            raise ValueError("Model path must be provided for DQN agent.")
+    elif agent_type == 'MCTS':
+        return MCTSAgent(100)
+    else:
+        raise ValueError(f"Unknown agent type: {agent_type}")
 
-
-
-if args.white == 'greedy':
-    agent_w = GreedyAgent()
-elif args.white == 'mouse':
-    agent_w = MouseAgent()
-elif args.white == 'DQN':
-    agent_w = DQNAgent('RL_method/model/model_O.pth')
+agent_b = get_agent(args.black, 'RL_method/model/model_X.pth')
+agent_w = get_agent(args.white, 'RL_method/model/model_O.pth')
 
 # Main game loop
 while not game.isEnd():
