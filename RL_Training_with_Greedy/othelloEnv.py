@@ -17,7 +17,7 @@ class OthelloEnvironment(gym.Env):
         self.game = Othello() # game == state
         self.greedyAgent = greedyAgent(self.game)
 
-    def stepDQN(self, action:int):
+    def stepDQN(self, action:int, current_turn:int):
         # actions: 0 - 64
         # 64: pass (no valid moves)
         # else: 8*row + col
@@ -33,6 +33,10 @@ class OthelloEnvironment(gym.Env):
         if self.game.isEnd():
             winner = self.game.getWinner()
             score = self.game.getScore()
+            if winner == current_turn:
+                reward = score * 10
+            else:
+                reward = -(score * 10)
             # Print the winner and score
             # if winner == 1:
             #     print("Black wins!")
@@ -41,7 +45,7 @@ class OthelloEnvironment(gym.Env):
             # else:
             #     print("It's a tie!")
             # print(f"Score for X: {score}")
-            reward = score * 10
+            # reward = score * 10
             terminated = True
             return self.game, reward, terminated, False, {}
         else:
@@ -54,7 +58,7 @@ class OthelloEnvironment(gym.Env):
             else:
                 l = self.game.getValidPositions(self.game.turn)
                 if (0,0) in l or (0,7) in l or (7,0) in l or (7,7) in l:
-                    reward -= 200
+                    reward -= 30
                 else:
                     reward = 0
 
@@ -71,8 +75,8 @@ class OthelloEnvironment(gym.Env):
             if self.game.getValidPositions(self.game.turn)!=[]: # 回来check一下这时候查的是谁的valid position
                 break
             if self.game.isEnd():
-                score = self.game.getScore()
-                reward = score * 10
+                score = self.game.getScore() # 这个score一定是正的
+                reward = score * 10 # 因为greedy也用不上reward，先不管了
                 return self.game, reward, True, False, {}
             self.greedyAgent.updateGame(self.game)
             self.greedyAgent.makeMove()
