@@ -45,16 +45,6 @@ class Node:
         """
         # random tie-breaking
         max_visits = max(child.visits for child in self.children)
-        # print("max_visits = ",max_visits)
-        # for i in range(len(self.children)):
-        #    if self.children[i].visits == max_visits:
-        #         printBoard(self.children[i].state.board)
-        # sum = 0
-        # for child in self.children:
-        #     sum = sum + child.visits
-        #     print(child.visits)
-        # # print sum of the visits 
-        # print("sum = ",sum)
         best_children = [child for child in self.children if child.visits == max_visits]
         return random.choice(best_children)
 
@@ -73,17 +63,10 @@ class MCTS:
         self.opponentAgent = RandomAgent()
 
     def search(self, iterations):
-        # print("*************root**************")
-        # printBoard(self.root.state.board)
-        # print("*************root**************")
         for _ in range(iterations):
             leaf = self.traverse(self.root)  # select a not expanded node
             simulation_result = self.simulate(leaf)  # get the result from unfully expanded node   
             self.backpropagate(leaf, simulation_result)  # Update the information along the path
-        # print("*************root exit**************")
-        # printBoard(self.root.state.board)
-        # print(self.root.state.is_terminal())
-        # print("*************root exit**************")
         return self.root.most_visited_child().state
 
     def traverse(self, node: Node):
@@ -104,10 +87,6 @@ class MCTS:
         state = leaf.state
         # play until end 
         while not state.is_terminal():
-            # printBoard(state.board)
-            # print(state.turn)
-            # print ("******************")
-            
             x, y = self.selfAgent.getAction(state) if self.root.state.turn == state.turn \
                   else self.opponentAgent.getAction(state)
             state = state.generateSuccessor(x, y)
