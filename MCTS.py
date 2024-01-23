@@ -2,6 +2,8 @@ from util import *
 from math import log, sqrt
 import random
 from othelloBase import GameState
+from randomAgent import RandomAgent
+from greedyAgent import GreedyAgent
 import pickle
 
 class Node:
@@ -27,12 +29,34 @@ class Node:
     def fully_expanded(self):
         return len(self.children) == len(self.state.generateSuccessors())
 
-    def best_child(self, c_param=1.44):
+    def UCB(self, c_param=1):
         choices_weights = [
             (c.rewards / c.visits) + c_param * ((2 * log(self.visits) / c.visits) ** 0.5)
             for c in self.children
         ]
-        return self.children[choices_weights.index(max(choices_weights))]
+        # random tie-breaking
+        max_weight = max(choices_weights)
+        best_children = [child for child, weight in zip(self.children, choices_weights) if weight == max_weight]
+        return random.choice(best_children)
+    
+    def most_visited_child(self):
+        """
+        select the child visited most 
+        """
+        # random tie-breaking
+        max_visits = max(child.visits for child in self.children)
+        print("max_visits = ",max_visits)
+        for i in range(len(self.children)):
+           if self.children[i].visits == max_visits:
+                printBoard(self.children[i].state.board)
+        sum = 0
+        for child in self.children:
+            sum = sum + child.visits
+            print(child.visits)
+        # print sum of the visits 
+        print("sum = ",sum)
+        best_children = [child for child in self.children if child.visits == max_visits]
+        return random.choice(best_children)
 
     def pick_random_unvisited_child(self):
         successor = self.state.generateSuccessors()
@@ -43,6 +67,10 @@ class Node:
 class MCTS:
     def __init__(self, init_state: GameState):
         self.root = Node(init_state)
+        self.visited_states = set()
+        # add two agent 
+        self.selfAgent = RandomAgent()
+        self.opponentAgent = RandomAgent()
 
     def search(self, iterations):
         # print("*************root**************")
@@ -50,30 +78,28 @@ class MCTS:
         # print("*************root**************")
         for _ in range(iterations):
             leaf = self.traverse(self.root)  # select a not expanded node
-            if leaf is None:
-                # reach the terminate state 
-                continue  
             simulation_result = self.simulate(leaf)  # get the result from unfully expanded node   
             self.backpropagate(leaf, simulation_result)  # Update the information along the path
-
+        print("iterations = ",iterations)
         # print("*************root exit**************")
         # printBoard(self.root.state.board)
         # print(self.root.state.is_terminal())
         # print("*************root exit**************")
-        return self.root.best_child(c_param=0.).state
+        return self.root.most_visited_child().state
 
     def traverse(self, node: Node):
         """
         get a node that is not visited
         """
-        while node.fully_expanded():
-            # if the node is the terminate state return 
-            if node.state.is_terminal():
-                return None
-            node = node.best_child()
+        while node.fully_expanded() and not node.state.is_terminal():
+            node = node.UCB()
         # pick up a unvisited child and add it in the tree structure 
-        child = node.pick_random_unvisited_child()
-        return node.add_child(child)
+        if not node.state.is_terminal():
+            child = node.pick_random_unvisited_child()
+            return node.add_child(child)
+        else:
+            return node 
+            
 
     def simulate(self, leaf: Node):
         state = leaf.state
@@ -82,7 +108,9 @@ class MCTS:
             # printBoard(state.board)
             # print(state.turn)
             # print ("******************")
-            x, y = self.choose_random_action(state)
+            
+            x, y = self.selfAgent.getAction(state) if self.root.state.turn == state.turn \
+                  else self.opponentAgent.getAction(state)
             state = state.generateSuccessor(x, y)
 
         result = 0
@@ -96,10 +124,3 @@ class MCTS:
         while node is not None:
             node.update(result)
             node = node.parent
-
-    def choose_random_action(self, state: GameState):
-        """
-        random agent 
-        """
-        possible_moves = state.getValidPositions()
-        return random.choice(possible_moves)
