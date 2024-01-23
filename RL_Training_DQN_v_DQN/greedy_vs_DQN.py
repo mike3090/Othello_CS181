@@ -5,7 +5,8 @@ from DQN_Agent import DQNAgent_460000
 from oldgreedyAgent import greedyAgent
 
 # 用户想先手，就把他改成True，否则改成False
-if_DQN_first = False 
+if_DQN_first = False
+
 
 # # Create an instance of the Othello game
 # game = Othello()

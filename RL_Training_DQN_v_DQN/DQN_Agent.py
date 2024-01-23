@@ -114,9 +114,9 @@ class DQNAgent_460000():
     def __init__(self, game: Othello, turn):
         self.q_net = QNet()
         if turn == 1: # X
-            self.q_net.load_state_dict(torch.load('model/model_X_460000.pth'))
+            self.q_net.load_state_dict(torch.load('model/model_X_10000.pth'))
         else: # O
-            self.q_net.load_state_dict(torch.load('model/model_O_460000.pth'))
+            self.q_net.load_state_dict(torch.load('model/model_O_10000.pth'))
         self.q_net.to(device)
         self.q_net.eval()
         self.game = game

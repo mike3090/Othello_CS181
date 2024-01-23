@@ -3,7 +3,7 @@ import sys
 from oldothelloBase import Othello
 from DQN_Agent import DQNAgent
 from oldgreedyAgent import greedyAgent
-from canvas import Canvas
+
 
 
 # 欲使DQN执黑则设为True

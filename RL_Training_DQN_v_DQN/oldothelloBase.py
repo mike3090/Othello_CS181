@@ -174,7 +174,7 @@ class Othello():
         else:
             return 0
     
-    def getScore(self):
+    def getXScore(self):
         '''
         Return the score, 
         currently for black X.
@@ -189,6 +189,22 @@ class Othello():
                     whiteCount += 1
         
         return blackCount - whiteCount
+    
+    def getOScore(self):
+        '''
+        Return the score, 
+        currently for black X.
+        '''
+        blackCount = 0
+        whiteCount = 0
+        for i in range(8):
+            for j in range(8):
+                if self.board[i][j] == 1:
+                    blackCount += 1
+                elif self.board[i][j] == -1:
+                    whiteCount += 1
+        
+        return whiteCount - blackCount
     
     def getBoard(self):
         '''
