@@ -65,9 +65,9 @@ def scoreEvaluationFunction(currentGameState: GameState, color):
 				score_3 -= 1
 
 		# weights for each score
-		w1 = 1.0
-		w2 = 1.0
-		w3 = 5.0
+		w1=2.833337761398725
+		w2=3.660558028419165
+		w3=3.636812042078707
 		
 		return w1* score_1 + w2 * score_2 + w3* score_3
 
@@ -103,4 +103,45 @@ class MinmaxAgent(Agent):
 										a = move
 						return v, a
 			_, A = minmax(state, self.depth, self.index)
+			return A
+	
+class AlphaBetaAgent(Agent):
+	def __init__(self, color):
+		# depth of the search tree
+		self.depth = 2
+		self.index = 0
+		self.color = color
+
+	def getAction(self, state: GameState):
+			def alphabeta(gamestate: GameState, depth, index, alpha, beta):
+						nextDepth = (depth - 1) if index == 0 else depth
+						if nextDepth == -1 or gamestate.getBlackScore() + gamestate.getWhiteScore() == 64:
+								return scoreEvaluationFunction(gamestate, self.color), None
+						if index == 0:
+								v = -999
+								a = None
+								f = max
+						else:
+								v = 999 
+								a = None
+								f = min
+						nextindex = index + 1
+						nextindex = nextindex % 2 # there are 2 agents, minmaxagent and opponent
+
+						for move in gamestate.getValidPositions():
+								newstate = gamestate.getNextState(move)
+								value, childaction = alphabeta(newstate, nextDepth, nextindex, alpha, beta)
+								if value == f(value, v):
+										v = value
+										a = move
+								if index == 0:
+									if value > beta:
+											return v,a
+									alpha = max(alpha, value)
+								else:
+									if value < alpha:
+											return v,a
+									beta = min(beta, value)
+						return v, a
+			_, A = alphabeta(state, self.depth, self.index, -999, 999)
 			return A

@@ -8,10 +8,11 @@ from mouseAgent import MouseAgent
 from DQNAgent import DQNAgent
 from MCTSAgent import MCTSAgent
 from minmaxAgent import MinmaxAgent
+from minmaxAgent import AlphaBetaAgent
 from randomAgent import RandomAgent
 
 # Parse command-line arguments
-agents = ['random', 'greedy', 'mouse', 'DQN', 'MCTS', 'minmax']
+agents = ['random', 'greedy', 'mouse', 'DQN', 'MCTS', 'alphabeta']
 parser = argparse.ArgumentParser(description='Select an agent for the Othello game.')
 parser.add_argument('-b', '--black', type=str, default='greedy', choices=agents,
                     help='the black player')
@@ -37,8 +38,8 @@ def get_agent(agent_type, model_path=None, color = None):
             raise ValueError("Model path must be provided for DQN agent.")
     elif agent_type == 'MCTS':
         return MCTSAgent()
-    elif agent_type == 'minmax':
-        return MinmaxAgent(color)
+    elif agent_type == 'alphabeta':
+        return AlphaBetaAgent(color)
     else:
         raise ValueError(f"Unknown agent type: {agent_type}")
 
@@ -49,8 +50,8 @@ def play_game(args):
     canvas = Canvas() if args.visual else None
     last_action = None
     # initialize agents 
-    agent_b = get_agent(args.black, 'RL_Training_with_Greedy/model/model_X.pth')
-    agent_w = get_agent(args.white, 'RL_Training_with_Greedy/model/model_O.pth')
+    agent_b = get_agent(args.black, 'RL_Training_with_Greedy/model/model_X.pth', 'black')
+    agent_w = get_agent(args.white, 'RL_Training_with_Greedy/model/model_O.pth', 'white')
     # Main game loop
     while not game.isEnd():
         state = game.gamestate

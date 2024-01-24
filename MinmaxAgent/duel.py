@@ -87,9 +87,9 @@ if __name__ == "__main__":
         # w1 = random.uniform(1, 5)
         # w2 = random.uniform(1, 5)
         # w3 = random.uniform(1, 5)
-        w1=1
-        w2=1
-        w3=5
+        w1=2.833337761398725
+        w2=3.660558028419165
+        w3=3.636812042078707
         weights = (w1, w2, w3)
         # run game repeatedly
         wins = 0
