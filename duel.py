@@ -8,11 +8,10 @@ from mouseAgent import MouseAgent
 from DQNAgent import DQNAgent
 from MCTSAgent import MCTSAgent
 from minmaxAgent import MinmaxAgent
-from minmaxAgent import AlphaBetaAgent
 from randomAgent import RandomAgent
 
 # Parse command-line arguments
-agents = ['random', 'greedy', 'mouse', 'DQN', 'MCTS', 'alphabeta']
+agents = ['random', 'greedy', 'mouse', 'DQN', 'MCTS', 'minmax']
 parser = argparse.ArgumentParser(description='Select an agent for the Othello game.')
 parser.add_argument('-b', '--black', type=str, default='greedy', choices=agents,
                     help='the black player')
@@ -38,8 +37,8 @@ def get_agent(agent_type, model_path=None, color = None):
             raise ValueError("Model path must be provided for DQN agent.")
     elif agent_type == 'MCTS':
         return MCTSAgent()
-    elif agent_type == 'alphabeta':
-        return AlphaBetaAgent(color)
+    elif agent_type == 'minmax':
+        return MinmaxAgent(color)
     else:
         raise ValueError(f"Unknown agent type: {agent_type}")
 
