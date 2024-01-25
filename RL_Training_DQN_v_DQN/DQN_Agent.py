@@ -1,14 +1,11 @@
 import sys
-sys.path.append("..")
 import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import random
-import collections
-import sys
 import othelloEnv
-from othelloBase import Othello
+from oldothelloBase import Othello
 
 STATE_SPACE_LENGTH = 64
 ACTION_SPACE_LENGTH = 65 # 先是64个可能的落子点；中间的四个也算上。如果没有可落子的：就是最后一个对应的。

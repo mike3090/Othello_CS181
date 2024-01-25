@@ -50,17 +50,42 @@ class OthelloEnvironment(gym.Env):
             return self.game, reward, terminated, False, {}
         else:
             # 对在边角的情况进行奖励
+            # if (row,col) == (0,0) or (row,col) == (0,7) or (row,col) == (7,0) or (row,col) == (7,7):
+            #     reward += 100
+            # elif row == 0 or row == 7 or col == 0 or col == 7:
+            #     reward += 20
+            # 对在边角的情况进行奖励
             if (row,col) == (0,0) or (row,col) == (0,7) or (row,col) == (7,0) or (row,col) == (7,7):
                 reward += 100
-            elif row == 0 or row == 7 or col == 0 or col == 7:
-                reward += 20
-            # 对于下一步会导致对方下到角落的情况进行惩罚
+            elif (row, col) == (0,1) or (row, col) == (1,0) or (row, col) == (1,1) \
+                 or (row, col) ==(0,6) or (row, col) ==(1,6) or (row, col) ==(1,7) \
+                 or (row, col) ==(6,0) or (row, col) ==(6,1) or (row, col) ==(7,1) \
+                 or (row, col) ==(6,6) or (row, col) ==(6,7) or (row, col) ==(7,6):
+                reward -= 35
+            elif (row, col) == (0,2) or (row, col) == (0,5) or (row, col) == (2,0) \
+                 or (row, col) == (2,7) or (row, col) == (6,0) or (row, col) == (6,7) \
+                 or (row, col) == (7,2) or (row, col) == (7,5):
+                reward += 10
+            elif (row, col) == (3, 0) or (row, col) == (4, 0) \
+                 or (row, col) == (2, 2) or (row, col) == (5, 2) \
+                 or (row, col) == (2, 5) or (row, col) == (5, 5) \
+                 or (row, col) == (3, 7) or (row, col) == (4, 7):
+                reward += 5
+            elif (row, col) == (2, 1) or (row, col) == (3, 1) or (row, col) == (4, 1) or (row, col) == (5, 1) \
+                 or (row, col) == (1, 2) or (row, col) == (6, 2) or (row, col) == (1, 3) or (row, col) == (6, 3) \
+                 or (row, col) == (1, 4) or (row, col) == (6, 4) or (row, col) == (1, 5) or (row, col) == (6, 5) \
+                 or (row, col) == (3, 4) or (row, col) == (4, 4) or (row, col) == (3, 3) or (row, col) == (4, 3) \
+                 or (row, col) == (2, 6) or (row, col) == (3, 6) or (row, col) == (4, 6) or (row, col) == (5, 6):
+                reward += 2
+            elif (row, col) == (3, 2) or (row, col) == (4, 2) or (row, col) == (2, 3) or (row, col) == (5, 3) \
+                 or (row, col) == (2, 4) or (row, col) == (5, 4) or (row, col) == (3, 5) or (row, col) == (4, 5):
+                reward += 1
             else:
-                l = self.game.getValidPositions(self.game.turn)
-                if (0,0) in l or (0,7) in l or (7,0) in l or (7,7) in l:
-                    reward -= 30
-                else:
-                    reward = 0
+                # l = self.game.getValidPositions(self.game.turn)
+                # if (0,0) in l or (0,7) in l or (7,0) in l or (7,7) in l:
+                #     reward -= 30
+                # else:
+                reward = 0
 
             terminated = False
             return self.game, reward, terminated, False, {}
