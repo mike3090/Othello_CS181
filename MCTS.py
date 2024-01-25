@@ -55,12 +55,16 @@ class Node:
 
 
 class MCTS:
-    def __init__(self, init_state: GameState):
+    def __init__(self, init_state: GameState, default_policy):
         self.root = Node(init_state)
         self.visited_states = set()
         # add two agent 
-        self.selfAgent = RandomAgent()
-        self.opponentAgent = RandomAgent()
+        if init_state.turn == 1:
+            self.selfAgent = default_policy(0)
+            self.opponentAgent = default_policy(1)
+        else:
+            self.selfAgent = default_policy(1)
+            self.opponentAgent = default_policy(0)
 
     def search(self, iterations):
         for _ in range(iterations):

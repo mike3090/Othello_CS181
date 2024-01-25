@@ -9,6 +9,7 @@ from DQNAgent import DQNAgent
 from MCTSAgent import MCTSAgent
 from minmaxAgent import MinmaxAgent
 from randomAgent import RandomAgent
+from tqdm import tqdm
 
 # Parse command-line arguments
 agents = ['random', 'greedy', 'mouse', 'DQN', 'MCTS', 'minmax']
@@ -89,7 +90,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
     # run game repeatedly
     wins = 0
-    for _ in range(args.repeat):
+    for _ in tqdm(range(args.repeat), desc="Progress", ncols=100):
+        
         wins += 1 if play_game(args) == "Black" else 0
 
     win_rate = wins / args.repeat
