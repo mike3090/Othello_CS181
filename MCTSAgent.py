@@ -4,8 +4,8 @@ from othelloBase import Agent, GameState
 import numpy as np
 
 class MCTSAgent(Agent):
-    def __init__(self, iterations=20):
-        super().__init__()
+    def __init__(self, index, iterations=20):
+        super().__init__(index)
         self.iterations = iterations
 
     def getAction(self, state: GameState):  

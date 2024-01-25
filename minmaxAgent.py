@@ -4,17 +4,16 @@ from othelloBase import Agent
 import random
 
 class MinmaxAgent(Agent):
-	def __init__(self, color, pruning = True):
+	def __init__(self, index, pruning = True):
+		super().__init__(index)
 		# depth of the search tree
 		self.depth = 2
-		self.index = 0
-		self.color = color
 		self.pruning = pruning
 		
 	def minmax(self, gamestate: GameState, depth, index, alpha, beta):
 		nextDepth = (depth - 1) if index == 0 else depth
 		if nextDepth == -1 or gamestate.getBlackScore() + gamestate.getWhiteScore() == 64:
-				return scoreEvaluationFunction(gamestate, self.color), None
+				return scoreEvaluationFunction(gamestate, self.index), None
 		if index == 0:
 				v = -999
 				a = None

@@ -29,10 +29,10 @@ def scoreEvaluationFunction(currentGameState: GameState, color):
     # feature 1
     w = currentGameState.getWhiteScore()
     b = currentGameState.getBlackScore()
-    if color == 'black':
+    if color == 0:
         score_1 = b - w
         index = 1
-    elif color == 'white':
+    elif color == 1:
         score_1 = w - b
         index = -1
     
@@ -84,3 +84,34 @@ def scoreEvaluationFunction(currentGameState: GameState, color):
     w2=3.660558028419165
     w3=3.636812042078707
     return w1* score_1 + w2 * score_2 + w3* score_3
+
+def knowledge(state:GameState):
+    """ 
+    remove some actions based on the knowledge 
+    """
+    actions = state.getValidPositions()
+    # if actions could take the corners, the agent should remove the rest
+    corners = [(0,0), (0,7), (7,0), (7,7)]
+    for corner in corners:
+        if corner in actions:
+            for action in actions:
+                if not action in corner:
+                    actions.remove(action)
+            break
+    
+    # to check whether the move could be fliped by the opponent
+    tmp_actions = actions
+    for x, y in tmp_actions:
+        next_state = state.generateSuccessor(x, y)
+        next_state_oppents = next_state.generateSuccessors()
+        for next_state_oppent in next_state_oppents:
+            if next_state_oppent.board[x][y] == -state.turn:
+                # remove the action from the waiting list
+                print((x, y))
+                actions.remove((x, y)) 
+                # avoid empty list
+                if len(actions) == 0:
+                    actions.append((x, y))
+
+    return actions 
+

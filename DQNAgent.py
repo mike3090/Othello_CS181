@@ -32,8 +32,10 @@ class QNet(nn.Module):
         return out
 
 class DQNAgent(Agent):
-    def __init__(self, ckpt_path: str):
+    def __init__(self, index):
+        super().__init__(index)
         self.q_net = QNet().to(device)
+        ckpt_path = 'RL_Training_with_Greedy/model/model_X.pth' if index == 0 else 'RL_Training_with_Greedy/model/model_O.pth'
         self.q_net.load_state_dict(torch.load(ckpt_path))
         self.q_net.eval()
 

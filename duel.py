@@ -23,22 +23,21 @@ parser.add_argument('-r', '--repeat', type=int, default=1, help='Number of games
 
 
 # Select the agent based on the command-line argument
-def get_agent(agent_type, model_path=None, color = None):
+# index balck is 0, white is 1
+def get_agent(args, index = None):
+    agent_type = args.black if index == 0 else args.white
     if agent_type == 'random':
-        return RandomAgent()
+        return RandomAgent(index)
     elif agent_type == 'greedy':
-        return GreedyAgent()
+        return GreedyAgent(index)
     elif agent_type == 'mouse':
-        return MouseAgent()
+        return MouseAgent(index)
     elif agent_type == 'DQN':
-        if model_path is not None:
-            return DQNAgent(model_path)
-        else:
-            raise ValueError("Model path must be provided for DQN agent.")
+        return DQNAgent(index)
     elif agent_type == 'MCTS':
-        return MCTSAgent()
+        return MCTSAgent(index)
     elif agent_type == 'minmax':
-        return MinmaxAgent(color)
+        return MinmaxAgent(index)
     else:
         raise ValueError(f"Unknown agent type: {agent_type}")
 
@@ -49,8 +48,8 @@ def play_game(args):
     canvas = Canvas() if args.visual else None
     last_action = None
     # initialize agents 
-    agent_b = get_agent(args.black, 'RL_Training_with_Greedy/model/model_X.pth', 'black')
-    agent_w = get_agent(args.white, 'RL_Training_with_Greedy/model/model_O.pth', 'white')
+    agent_b = get_agent(args, 0)
+    agent_w = get_agent(args, 1)
     # Main game loop
     while not game.isEnd():
         state = game.gamestate
