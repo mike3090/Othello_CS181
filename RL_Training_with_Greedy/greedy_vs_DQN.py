@@ -3,11 +3,12 @@ import sys
 from oldothelloBase import Othello
 from DQN_Agent import DQNAgent
 from oldgreedyAgent import greedyAgent
+import numpy as np
 
 
 
 # 欲使DQN执黑则设为True
-if_DQN_first = True
+if_DQN_first = False
 if if_DQN_first:
     print("X IS DQN")
 else:
@@ -63,7 +64,8 @@ else:
 # canvas.game_over(game.getWinner())
 
 win_cnt = 0
-for i in range(500):
+l = []
+for i in range(2000):
     if i%100 == 0:
         print(i)
     # Create an instance of the Othello game
@@ -110,10 +112,16 @@ for i in range(500):
 
     winner = game.getWinner()
     winnerName = "X" if winner == 1 else "O"
-    print(winnerName,end=", ")
+    # print(winnerName,end=", ")
     if if_DQN_first and winner == 1:
         win_cnt+=1
     elif not if_DQN_first and winner == -1:
         win_cnt+=1
+    if (i+1) % 200 == 0:
+        print(f"Win Rate: {win_cnt}/200")
+        l.append(win_cnt)
+        win_cnt = 0
     
-print(f"Win Rate: {win_cnt}/500")
+print(f"mean: {np.mean(l)}, sd: {np.std(l)}")
+    
+# print(f"Win Rate: {win_cnt}/500")

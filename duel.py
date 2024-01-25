@@ -9,6 +9,7 @@ from DQNAgent import DQNAgent
 from MCTSAgent import MCTSAgent
 from minmaxAgent import MinmaxAgent
 from randomAgent import RandomAgent
+import numpy as np
 
 # Parse command-line arguments
 agents = ['random', 'greedy', 'mouse', 'DQN', 'MCTS', 'minmax']
@@ -81,8 +82,12 @@ if __name__ == "__main__":
     args = parser.parse_args()
     # run game repeatedly
     wins = 0
-    for _ in range(args.repeat):
+    win_rate_l = []
+    for i in range(10*args.repeat):
         wins += 1 if play_game(args) == "Black" else 0
-
-    win_rate = wins / args.repeat
-    print(f'Win rate for black player: {win_rate * 100}%')
+        if (i+1) % args.repeat == 0:
+            win_rate = wins / args.repeat
+            win_rate_l.append(win_rate)
+            wins = 0
+            
+    print(f'Win rate for black player: mean = {np.mean(win_rate_l) * 100}%, sd = {np.std(win_rate_l) * 100}%')
