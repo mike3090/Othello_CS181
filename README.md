@@ -2,7 +2,7 @@
 
 Course Project for CS181 (Artificial Intelligence), 23Fall.
 
-Proudly presented to you by Zaizhou Yang, Shengxin Li, Yiang Ju, Zhuo diao and Guanjie Yang!
+Proudly presented to you by Zaizhou Yang, Shengxin Li, Yiang Ju, Zhuo diao and Guanjie Huang!
 
 ![Demo](./doc/demo.gif)
 
